@@ -1,0 +1,46 @@
+// game.h
+// Core game constants, enums, and function declarations
+
+#ifndef GAME_H
+#define GAME_H
+
+#include "raylib.h"
+
+// Screen dimensions
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
+
+// Game constants
+const int TOTAL_LEVELS = 6;
+const int MAX_BLOCKS = 80;
+const int MAX_POWERUPS = 10;
+const int MAX_PARTICLES = 200;
+
+// Game states
+typedef enum {
+    TITLE,
+    GAME,
+    PAUSE,
+    GAME_OVER,
+    VICTORY
+} GameScreen;
+
+// Powerup types
+typedef enum {
+    POWERUP_NONE,
+    POWERUP_EXTRA_LIFE,
+    POWERUP_EXPAND_PADDLE,
+    POWERUP_MULTI_BALL,
+    POWERUP_SPEED_UP,
+    POWERUP_SLOW_DOWN
+} PowerupType;
+
+// Colors
+const Color COLOR_PADDLE = SKYBLUE;
+const Color COLOR_BALL = WHITE;
+const Color COLOR_BACKGROUND = (Color){10, 10, 30, 255};
+
+// Utility functions
+void resetGame(struct Paddle* paddle, struct Ball* ball, int level);
+
+#endif // GAME_H

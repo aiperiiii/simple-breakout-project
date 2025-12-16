@@ -16,7 +16,7 @@ void spawn_paddle()
             }
         }
     }
-outer_loop_end:;
+    outer_loop_end:;
 }
 
 void move_paddle(const float x_offset)
@@ -34,3 +34,4 @@ bool is_colliding_with_paddle(const Vector2 pos, const Vector2 size)
     const Rectangle hitbox = { pos.x, pos.y, size.x, size.y };
     return CheckCollisionRecs(paddle_hitbox, hitbox);
 }
+

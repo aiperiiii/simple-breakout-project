@@ -1,0 +1,26 @@
+// game.cpp
+// Implementation of game utility functions
+
+#include "game.h"
+#include "paddle.h"
+#include "ball.h"
+#include "blocks.h"
+#include "powerups.h"
+#include "particles.h"
+
+void resetGame(Paddle* paddle, Ball* ball, int level) {
+    // Reset paddle
+    *paddle = initPaddle();
+
+    // Reset ball
+    resetBall(ball, paddle);
+
+    // Initialize blocks for the level
+    initBlocks(level);
+
+    // Clear powerups
+    initPowerups();
+
+    // Clear particles
+    initParticles();
+}

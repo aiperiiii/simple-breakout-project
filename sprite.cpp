@@ -1,41 +1,44 @@
+// sprite.cpp
 #include "sprite.h"
+#include "raylib.h"
+#include <string>
+#include <iostream>
 
-#include <cassert>
-
-sprite load_sprite(
-    const std::string& file_name_prefix,
-    const std::string& file_name_suffix,
-    const size_t frame_count,
-    const bool loop,
-    const size_t frames_to_skip)
+sprite load_sprite(const char* path_prefix, const char* extension, size_t frame_count, bool loop, size_t frames_to_skip)
 {
-    assert(frame_count < 100);
+    sprite s;
+    s.frame_count = frame_count;
+    s.frames = new Texture2D[frame_count];
+    s.loop = loop;
+    s.frames_to_skip = frames_to_skip;
+    s.frame_index = 0;
+    s.frames_skipped = 0;
+    s.prev_game_frame = 0;
 
-    const sprite result = { frame_count, frames_to_skip, 0, 0, loop, 0, new Texture2D[frame_count] };
-    for (size_t i = 0; i < frame_count; ++i) {
-        std::string file_name;
-        if (frame_count < 10) {
-            file_name = file_name_prefix;
-            file_name += std::to_string(i);
-            file_name += file_name_suffix;
+    for (size_t i = 0; i < frame_count; i++) {
+        std::string path = std::string(path_prefix) + "_" + std::to_string(i) + extension;
+
+        if (FileExists(path.c_str())) {
+            s.frames[i] = LoadTexture(path.c_str());
         } else {
-            file_name = file_name_prefix;
-            file_name += i < 10 ? "0" + std::to_string(i) : std::to_string(i);
-            file_name += file_name_suffix;
+            std::cout << "Warning: " << path << " not found, creating placeholder\n";
+            // Create a simple colored placeholder
+            Image img = GenImageColor(32, 32, Color{200, 100, 100, 255});
+            s.frames[i] = LoadTextureFromImage(img);
+            UnloadImage(img);
         }
-        result.frames[i] = LoadTexture(file_name.c_str());
     }
 
-    return result;
+    return s;
 }
 
-void unload_sprite(sprite& sprite)
+void unload_sprite(sprite& s)
 {
-    assert(sprite.frames != nullptr);
-
-    for (size_t i = 0; i < sprite.frame_count; ++i) {
-        UnloadTexture(sprite.frames[i]);
+    if (s.frames) {
+        for (size_t i = 0; i < s.frame_count; i++) {
+            UnloadTexture(s.frames[i]);
+        }
+        delete[] s.frames;
+        s.frames = nullptr;
     }
-    delete[] sprite.frames;
-    sprite.frames = nullptr;
 }
