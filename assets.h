@@ -16,6 +16,12 @@ inline sprite ball_sprite;
 
 inline Sound win_sound;
 inline Sound lose_sound;
+inline Sound game_sound;
+inline Sound button_click_sound;
+
+inline Music menu_music;
+inline Music game_music;
+inline Music victory_music;
 
 void load_fonts();
 void unload_fonts();

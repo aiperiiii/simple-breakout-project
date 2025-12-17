@@ -1,10 +1,12 @@
 #include "assets.h"
 
 #include "raylib.h"
+#include <cstdio>
+
 
 void load_fonts()
 {
-    menu_font = LoadFontEx("data/fonts/ARCADECLASSIC.TTF", 256, nullptr, 0);
+    menu_font = LoadFontEx("data/fonts/Daydream.otf", 256, nullptr, 0);
 }
 
 void unload_fonts()
@@ -14,11 +16,22 @@ void unload_fonts()
 
 void load_textures()
 {
-    wall_texture = LoadTexture("data/images/wall.png");
+    wall_texture = LoadTexture("data/images/block.gif");
     void_texture = LoadTexture("data/images/void.png");
-    block_texture = LoadTexture("data/images/block.png");
-    paddle_texture = LoadTexture("data/images/paddle.png");
-    ball_sprite = load_sprite("data/images/ball/ball", ".png", 8, true, 10);
+    block_texture = LoadTexture("data/images/img.png");
+    paddle_texture = LoadTexture("data/images/paddle.gif");
+    printf("=== Loading ball sprite ===\n");
+    ball_sprite = load_sprite("data/images/ball/newball", ".png", 4, true, 10);
+    printf("Ball sprite frames loaded: %zu\n", ball_sprite.frame_count);
+
+    for (size_t i = 0; i < ball_sprite.frame_count; i++) {
+        printf("Frame %zu: %dx%d, texture ID: %u\n",
+               i,
+               ball_sprite.frames[i].width,
+               ball_sprite.frames[i].height,
+               ball_sprite.frames[i].id);
+    }
+    printf("======================\n");
 }
 
 void unload_textures()
@@ -35,11 +48,18 @@ void load_sounds()
     InitAudioDevice();
     win_sound = LoadSound("data/sounds/win.wav");
     lose_sound = LoadSound("data/sounds/lose.wav");
+
+    if (FileExists("data/sounds/candy.wav")) {
+        game_music = LoadMusicStream("data/sounds/candy.wav");
+        SetMusicVolume(game_music, 0.6f);
+    }
 }
 
 void unload_sounds()
 {
     UnloadSound(win_sound);
     UnloadSound(lose_sound);
+    if (game_music.stream.buffer != nullptr)
+        UnloadMusicStream(game_music);
     CloseAudioDevice();
 }

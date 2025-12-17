@@ -11,6 +11,7 @@ void update()
 {
     // TODO
 
+
     if (IsKeyPressed(KEY_ESCAPE)) {
         game_state = paused_state;
     }
@@ -24,10 +25,13 @@ void update()
     if (!is_ball_inside_level()) {
         load_level();
         PlaySound(lose_sound);
-    } else if (current_level_blocks == 0) {
+    }
+
+    else if (current_level_blocks == 0) {
         load_level(1);
         PlaySound(win_sound);
     }
+
 }
 
 void draw()
@@ -51,7 +55,14 @@ int main()
     load_level();
     load_sounds();
 
+    if (game_music.stream.buffer != nullptr) {
+        PlayMusicStream(game_music);
+    }
+
     while (!WindowShouldClose()) {
+        if (game_music.stream.buffer != nullptr) {
+            UpdateMusicStream(game_music);
+        }
         BeginDrawing();
 
         draw();
