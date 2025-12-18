@@ -151,7 +151,14 @@ void draw_ui()
 
 void draw_level()
 {
-    ClearBackground(BLACK);
+    const float tile_width = background_texture.width;
+    const float tile_height = background_texture.height;
+
+    for (float y = 0; y < screen_size.y; y += tile_height) {
+        for (float x = 0; x < screen_size.x; x += tile_width) {
+            DrawTexture(background_texture, x, y, WHITE);
+        }
+    }
 
     for (size_t row = 0; row < current_level.rows; ++row) {
         for (size_t column = 0; column < current_level.columns; ++column) {

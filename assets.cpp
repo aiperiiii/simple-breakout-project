@@ -1,7 +1,6 @@
 #include "assets.h"
 
 #include "raylib.h"
-#include <cstdio>
 
 
 void load_fonts()
@@ -16,22 +15,12 @@ void unload_fonts()
 
 void load_textures()
 {
-    wall_texture = LoadTexture("data/images/block.gif");
+    wall_texture = LoadTexture("data/images/block.png");
     void_texture = LoadTexture("data/images/void.png");
     block_texture = LoadTexture("data/images/img.png");
-    paddle_texture = LoadTexture("data/images/paddle.gif");
-    printf("=== Loading ball sprite ===\n");
-    ball_sprite = load_sprite("data/images/ball/newball", ".png", 4, true, 10);
-    printf("Ball sprite frames loaded: %zu\n", ball_sprite.frame_count);
-
-    for (size_t i = 0; i < ball_sprite.frame_count; i++) {
-        printf("Frame %zu: %dx%d, texture ID: %u\n",
-               i,
-               ball_sprite.frames[i].width,
-               ball_sprite.frames[i].height,
-               ball_sprite.frames[i].id);
-    }
-    printf("======================\n");
+    paddle_texture = LoadTexture("data/images/paddle.png");
+    background_texture = LoadTexture("data/images/background.png");
+    ball_sprite = load_sprite("data/images/ball/ball", ".gif", 2, true, 10);
 }
 
 void unload_textures()
@@ -40,6 +29,7 @@ void unload_textures()
     UnloadTexture(void_texture);
     UnloadTexture(block_texture);
     UnloadTexture(paddle_texture);
+    UnloadTexture(background_texture);
     unload_sprite(ball_sprite);
 }
 

@@ -31,3 +31,4 @@ add_executable(
         breakout
 )
 target_link_libraries(breakout PRIVATE raylib glfw)
+
