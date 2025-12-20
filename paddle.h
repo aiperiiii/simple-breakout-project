@@ -4,9 +4,12 @@
 #include "raylib.h"
 
 inline constexpr Vector2 paddle_size = { 3.0f, 1.0f };
+inline constexpr Vector2 paddle_size_expanded = { 5.0f, 1.0f };
 inline constexpr float paddle_speed = 0.1f;
 
 inline Vector2 paddle_pos;
+inline Vector2 current_paddle_size = paddle_size;
+inline bool paddle_expanded = false;
 
 void spawn_paddle();
 void move_paddle(float x_offset);

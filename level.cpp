@@ -13,6 +13,7 @@ void load_level(const int offset)
 {
     current_level_index += offset;
 
+
     if (current_level_index >= level_count) {
         game_state = victory_state;
         ClearBackground(BLACK);
@@ -29,15 +30,24 @@ void load_level(const int offset)
     for (int row = 0; row < rows; ++row) {
         for (int column = 0; column < columns; ++column) {
             current_level_data[row * columns + column] = levels[current_level_index].data[row * columns + column];
-            if (current_level_data[row * columns + column] == BLOCKS) {
+            if (current_level_data[row * columns + column] == BLOCKS || current_level_data[row * columns + column] == METAL) {
                 ++current_level_blocks;
-            }
+    }
         }
     }
+
     current_level = { rows, columns, current_level_data };
 
     spawn_ball();
     spawn_paddle();
+
+    if (current_level_index >= 2 && current_level_index <= 4) {
+        paddle_expanded = true;
+        spawn_second_ball();
+    } else {
+        paddle_expanded = false;
+        ball2_active = false;
+    }
 
     derive_graphics_metrics();
 }

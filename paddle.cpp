@@ -26,11 +26,13 @@ void move_paddle(const float x_offset)
         next_paddle_pos_x = std::round(next_paddle_pos_x);
     }
     paddle_pos.x = next_paddle_pos_x;
+    Vector2 size = paddle_expanded ? paddle_size_expanded : paddle_size;
 }
 
 bool is_colliding_with_paddle(const Vector2 pos, const Vector2 size)
 {
-    const Rectangle paddle_hitbox = { paddle_pos.x, paddle_pos.y, paddle_size.x, paddle_size.y };
+    Vector2 paddle_sz = paddle_expanded ? paddle_size_expanded : paddle_size;
+    const Rectangle paddle_hitbox = { paddle_pos.x, paddle_pos.y, paddle_sz.x, paddle_sz.y };
     const Rectangle hitbox = { pos.x, pos.y, size.x, size.y };
     return CheckCollisionRecs(paddle_hitbox, hitbox);
 }

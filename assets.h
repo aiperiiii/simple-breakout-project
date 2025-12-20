@@ -12,17 +12,26 @@ inline Texture2D void_texture;
 inline Texture2D paddle_texture;
 inline Texture2D block_texture;
 inline Texture2D background_texture;
+inline Texture2D metal_texture;
+inline Texture2D cracked_metal_texture;
+inline Texture2D heart_texture;
 
 inline sprite ball_sprite;
+
+inline Texture2D menu_background;
+inline Texture2D win_screen_bg;
+inline Texture2D lose_screen_bg;
+inline Texture2D pause_screen_bg;
 
 inline Sound win_sound;
 inline Sound lose_sound;
 inline Sound game_sound;
-inline Sound button_click_sound;
+inline Sound paddle_sound;
+inline Sound block_sound;
+inline Sound wall_sound;
+inline Sound metal_sound;
 
-inline Music menu_music;
 inline Music game_music;
-inline Music victory_music;
 
 void load_fonts();
 void unload_fonts();

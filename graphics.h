@@ -1,6 +1,7 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
+
 void derive_graphics_metrics();
 
 void draw_menu();
@@ -11,5 +12,7 @@ void draw_ball();
 void draw_pause_menu();
 void init_victory_menu();
 void draw_victory_menu();
-
+void animate_victory_menu();
+void draw_lose_menu();
+void draw_lives();
 #endif // GRAPHICS_H

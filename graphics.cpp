@@ -2,6 +2,7 @@
 
 #include "assets.h"
 #include "ball.h"
+#include "game.h"
 #include "level.h"
 #include "paddle.h"
 
@@ -25,8 +26,8 @@ constexpr float screen_scale_divisor = 700.0f;
 
 constexpr size_t victory_ball_launch_degree_offset = 3;
 constexpr size_t victory_balls_count = 360 / victory_ball_launch_degree_offset;
-constexpr float victory_balls_speed = 7.0f;
-constexpr float victory_balls_size = 3.0f;
+constexpr float victory_balls_speed = 10.0f;
+constexpr float victory_balls_size = 5.0f;
 
 Vector2 screen_size;
 float screen_scale;
@@ -103,13 +104,23 @@ void derive_graphics_metrics()
 
 void draw_menu()
 {
-    ClearBackground(BLACK);
+    if (menu_background.id != 0) {
+        DrawTexturePro(
+            menu_background,
+            Rectangle { 0, 0, (float)menu_background.width, (float)menu_background.height },
+            Rectangle { 0, 0, screen_size.x, screen_size.y },
+            Vector2 { 0, 0 },
+            0.0f,
+            WHITE);
+    } else {
+        ClearBackground(BLACK);
+    }
 
     const Text game_title = {
         "Breakout",
-        { 0.50f, 0.50f },
+        { 0.50f, 0.40f },
         200.0f,
-        RED,
+        PINK,
         4.0f,
         &menu_font
     };
@@ -117,9 +128,9 @@ void draw_menu()
 
     const Text game_subtitle = {
         "Press Enter to Start",
-        { 0.50f, 0.65f },
-        32.0f,
-        WHITE,
+        { 0.50f, 0.60f },
+        38.0f,
+        PINK,
         4.0f,
         &menu_font
     };
@@ -129,10 +140,10 @@ void draw_menu()
 void draw_ui()
 {
     const Text level_counter = {
-        "LEVEL " + std::to_string(current_level_index + 1) + " OUT OF " + std::to_string(level_count),
+        "LEVEL " + std::to_string(current_level_index + 1) + " / " + std::to_string(level_count),
         { 0.5f, 0.0375f },
         48.0f,
-        WHITE,
+        PINK,
         4.0f,
         &menu_font
     };
@@ -142,7 +153,7 @@ void draw_ui()
         "BLOCKS " + std::to_string(current_level_blocks),
         { 0.5f, 0.9625f },
         48.0f,
-        WHITE,
+        PINK,
         4.0f,
         &menu_font
     };
@@ -173,6 +184,12 @@ void draw_level()
             case BLOCKS:
                 draw_image(block_texture, texture_x_pos, texture_y_pos, cell_size);
                 break;
+            case METAL:
+                draw_image(metal_texture, texture_x_pos, texture_y_pos, cell_size);
+                break;
+            case CRACKED_METAL:
+                draw_image(cracked_metal_texture, texture_x_pos, texture_y_pos, cell_size);
+                break;
             default:;
             }
         }
@@ -181,9 +198,10 @@ void draw_level()
 
 void draw_paddle()
 {
+    Vector2 size = paddle_expanded ? paddle_size_expanded : paddle_size;
     const float texture_x_pos = shift_to_center.x + paddle_pos.x * cell_size;
     const float texture_y_pos = shift_to_center.y + paddle_pos.y * cell_size;
-    draw_image(paddle_texture, texture_x_pos, texture_y_pos, paddle_size.x * cell_size, paddle_size.y * cell_size);
+    draw_image(paddle_texture, texture_x_pos, texture_y_pos, size.x * cell_size, size.y * cell_size);
 }
 
 void draw_ball()
@@ -191,21 +209,37 @@ void draw_ball()
     const float texture_x_pos = shift_to_center.x + ball_pos.x * cell_size;
     const float texture_y_pos = shift_to_center.y + ball_pos.y * cell_size;
     draw_sprite(ball_sprite, texture_x_pos, texture_y_pos, cell_size);
+    if (ball2_active) {
+        const float texture_x_pos2 = shift_to_center.x + ball2_pos.x * cell_size;
+        const float texture_y_pos2 = shift_to_center.y + ball2_pos.y * cell_size;
+        draw_sprite(ball_sprite, texture_x_pos2, texture_y_pos2, cell_size);
+    }
 }
 
 void draw_pause_menu()
 {
-    ClearBackground(BLACK);
+
+    draw_image(pause_screen_bg, 0, 0, screen_size.x, screen_size.y);
 
     const Text paused_title = {
-        "Press Escape to Resume",
-        { 0.50f, 0.50f },
-        32.0f,
-        WHITE,
+        "PAUSED",
+        { 0.50f, 0.45f },
+        150.0f,
+        PINK,
         4.0f,
         &menu_font
     };
     draw_text(paused_title);
+
+    const Text paused_subtitle = {
+        "Press Escape to Resume",
+        { 0.50f, 0.60f },
+        40.0f,
+        PINK,
+        4.0f,
+        &menu_font
+    };
+    draw_text(paused_subtitle);
 }
 
 void init_victory_menu()
@@ -236,20 +270,21 @@ void animate_victory_menu()
 }
 
 void draw_victory_menu()
+
 {
     animate_victory_menu();
 
-    DrawRectangleV({ 0.0f, 0.0f }, { screen_size.x, screen_size.y }, { 0, 0, 0, 50 });
+    draw_image(win_screen_bg, 0, 0, screen_size.x, screen_size.y);
 
     for (const auto& [x, y] : victory_balls_pos) {
-        DrawCircleV({ x, y }, victory_balls_size, WHITE);
+        DrawCircleV({ x, y }, victory_balls_size, PINK);
     }
 
     const Text victory_title = {
-        "Victory!",
+        "You Won!",
         { 0.50f, 0.50f },
         100.0f,
-        RED,
+        PINK,
         4.0f,
         &menu_font
     };
@@ -259,10 +294,45 @@ void draw_victory_menu()
         "Press Enter to Restart",
         { 0.50f, 0.65f },
         32.0f,
-        WHITE,
+        PINK,
         4.0f,
         &menu_font
     };
     draw_text(victory_subtitle);
 }
 
+void draw_lose_menu()
+{
+    draw_image(lose_screen_bg, 0, 0, screen_size.x, screen_size.y);
+
+    const Text lose_title = {
+        "You Lost!",
+        { 0.50f, 0.45f },
+        100.0f,
+        PINK,
+        4.0f,
+        &menu_font
+    };
+    draw_text(lose_title);
+
+    const Text lose_subtitle = {
+        "Press Enter to Try Again",
+        { 0.50f, 0.60f },
+        32.0f,
+        PINK,
+        4.0f,
+        &menu_font
+    };
+    draw_text(lose_subtitle);
+}
+void draw_lives()
+{
+    const float heart_size = 25.0f;
+    const float spacing = 40.0f;
+    const float start_x = 30.0f;
+    const float y_pos = 40.0f;
+
+    for (int i = 0; i < lives; i++) {
+        DrawTexture(heart_texture, start_x + i * spacing, y_pos, WHITE);
+    }
+}
