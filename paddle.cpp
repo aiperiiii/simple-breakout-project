@@ -21,12 +21,13 @@ void spawn_paddle()
 
 void move_paddle(const float x_offset)
 {
+    Vector2 size = paddle_expanded ? paddle_size_expanded : paddle_size;
+
     float next_paddle_pos_x = paddle_pos.x + x_offset;
-    if (is_colliding_with_level_cell({ next_paddle_pos_x, paddle_pos.y }, paddle_size, WALL)) {
-        next_paddle_pos_x = std::round(next_paddle_pos_x);
+    if (is_colliding_with_level_cell({ next_paddle_pos_x, paddle_pos.y }, size, WALL)) {
+        return;
     }
     paddle_pos.x = next_paddle_pos_x;
-    Vector2 size = paddle_expanded ? paddle_size_expanded : paddle_size;
 }
 
 bool is_colliding_with_paddle(const Vector2 pos, const Vector2 size)
